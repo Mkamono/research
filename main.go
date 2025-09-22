@@ -15,7 +15,8 @@ import (
 func main() {
 	ctx := context.Background()
 
-	g := genkit.Init(ctx,
+	g := genkit.Init(
+		ctx,
 		genkit.WithPlugins(&googlegenai.GoogleAI{}),
 		genkit.WithDefaultModel("googleai/gemini-2.5-flash-lite"),
 	)
@@ -41,11 +42,13 @@ func main() {
 
 	recipeGeneratorFlow := flow.RecipeGeneratorFlow(g)
 	simpleFlow := flow.SimpleFlow(g, mcpTools)
+	deepResearchFlow := flow.DeepResearchFlow(g, mcpTools)
 
 	// Start a server to serve the flow and keep the app running for the Developer UI
 	mux := http.NewServeMux()
 	mux.HandleFunc("POST /recipeGeneratorFlow", genkit.Handler(recipeGeneratorFlow))
 	mux.HandleFunc("POST /simpleFlow", genkit.Handler(simpleFlow))
+	mux.HandleFunc("POST /deepResearchFlow", genkit.Handler(deepResearchFlow))
 
 	log.Println("Starting server on http://localhost:3400")
 	log.Fatal(server.Start(ctx, "127.0.0.1:3400", mux))

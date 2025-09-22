@@ -1,13 +1,14 @@
 {
   "permissions": {
     "allow": [
-      "Bash(mise run kill2:*)"
+      "Bash(mise run kill2:*)",
+      "mcp__genkit__lookup_genkit_docs"
     ],
     "deny": [],
     "ask": []
   },
+  "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "genkit"
-  ],
-  "enableAllProjectMcpServers": true
+  ]
 }

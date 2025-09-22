@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Go-based application using Firebase Genkit that provides AI-powered workflows for recipe generation and simple text processing. The application currently has two main flows: `RecipeGeneratorFlow` and `SimpleFlow`, with MCP (Model Context Protocol) integration for external tool access.
+This is a Go-based application using Firebase Genkit that provides AI-powered workflows for recipe generation, simple text processing, and deep research. The application currently has three main flows: `RecipeGeneratorFlow`, `SimpleFlow`, and `DeepResearchFlow`, with MCP (Model Context Protocol) integration for external tool access.
 
 ## Architecture
 
@@ -13,6 +13,7 @@ This is a Go-based application using Firebase Genkit that provides AI-powered wo
 - **main.go**: Entry point that initializes Genkit with Google AI plugin, sets up MCP (Model Context Protocol) host for external tools, and starts HTTP server on port 3400
 - **flow/recipe.go**: Recipe generation flow that takes ingredient and dietary restrictions as input and generates structured recipe data
 - **flow/simple.go**: Basic text generation flow for simple AI interactions with MCP tool access
+- **flow/deepresearch.go**: Multi-phase research flow that uses MCP tools for user interaction and web search for comprehensive research reports
 - **local_mcp.go**: Configuration for MCP servers that provide external tools (ask-me server)
 - **mcp/ask-me/**: MCP server that provides chat functionality with Slack integration for user interaction
 
@@ -22,7 +23,9 @@ This is a Go-based application using Firebase Genkit that provides AI-powered wo
 - MCP (Model Context Protocol) integration for external tool access
 - Structured data generation with JSON schemas for input/output validation
 - HTTP endpoints for flow execution
+- Web search integration using Google Search API for research capabilities
 - Slack integration for interactive user communication through MCP tools
+- Multi-phase research workflow with planning, data collection, and synthesis
 
 ### MCP Integration
 
@@ -57,6 +60,7 @@ The development server:
 
 - `POST /recipeGeneratorFlow`: Recipe generation
 - `POST /simpleFlow`: Basic text generation with MCP tool support
+- `POST /deepResearchFlow`: Comprehensive research with user interaction and web search
 
 ## Input/Output Schemas
 
@@ -68,6 +72,15 @@ The development server:
 - Input: `SimpleInput` with text input
 - Output: Plain text response
 - Has access to MCP tools for interactive user communication
+
+### Deep Research Flow
+- Input: `DeepResearchInput` with topic, purpose, scope, and language
+- Output: `DeepResearchResult` with comprehensive research report including:
+  - Research plan and key questions
+  - Detailed findings from web search
+  - Synthesized report with structured sections
+  - Summary and recommendations
+- Uses MCP tools for user interaction and Google Search for data collection
 
 ## Dependencies
 
