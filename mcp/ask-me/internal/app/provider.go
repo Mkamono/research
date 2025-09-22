@@ -11,12 +11,12 @@ type ChatProvider interface {
 
 type ChatRequest struct {
 	Message  string  `json:"message" desc:"The message to send to the user"`
-	ThreadID *string `json:"thread_id,omitempty" desc:"Optional thread ID to continue an existing conversation. Use the same thread ID for related questions or follow-up discussions. Leave nil to start a new conversation thread."`
+	ThreadID *string `json:"thread_id,omitempty" desc:"CRITICAL: Thread ID to continue existing conversation. ALWAYS use the thread_id from previous chat responses for follow-up questions. Only omit for completely new, unrelated topics. Example: if asking follow-up questions about the same project/topic, use the same thread_id."`
 }
 
 type ChatResponse struct {
 	Message  string `json:"message" desc:"The reply message received from the user"`
-	ThreadID string `json:"thread_id" desc:"Thread ID for this conversation. Save this to continue the conversation in the same thread for related topics or follow-up questions."`
+	ThreadID string `json:"thread_id" desc:"IMPORTANT: Save this thread_id and use it in all subsequent related questions. This maintains conversation context. Always include this thread_id when asking follow-up questions, clarifications, or discussing the same topic. Do NOT start new threads for related conversations."`
 }
 
 type GetThreadHistoryResponse struct {

@@ -36,7 +36,7 @@ func main() {
 }
 
 func registerTools(g *genkit.Genkit, provider app.ChatProvider) {
-	genkit.DefineTool(g, "chat", "Ask the user a question when you need clarification, additional information, or confirmation. Use this when you are uncertain about something, need user input to proceed, or want to verify your understanding before taking action. This will send a message to the user and wait for their reply.",
+	genkit.DefineTool(g, "chat", "Ask the user a question when you need clarification, additional information, or confirmation. IMPORTANT: If this is a follow-up to a previous conversation, ALWAYS include the thread_id from the previous response to continue in the same thread. Only leave thread_id null for completely new topics. This maintains conversation context and keeps related discussions together.",
 		func(ctx *ai.ToolContext, req app.ChatRequest) (app.ChatResponse, error) {
 			return provider.Chat(ctx.Context, req)
 		})
