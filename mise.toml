@@ -2,13 +2,13 @@
 "npm:genkit-cli" = "latest"
 
 [env]
-GEMINI_API_KEY = "AIzaSyBTEgK53iynAQwvdm48YRxZsmzYBFqlDUc"
+_.file = ".env.local"
 
 [tasks.dev]
 run = "genkit start -- go run ."
 
-[tasks.kill]
-run = "lsof -i -nP | grep (pgrep -f research) | awk '{print $2}' | sort | uniq | xargs kill"
+[tasks.kill-research-ports]
+run = "lsof -i :4033 -i :4000 -i :3400 -nP | grep research | awk '{print $2}' | sort | uniq | xargs -r kill -9"
 
-[tasks.kill2]
-run = "pkill -f research || true; lsof -i -nP | grep LISTEN | awk '{print $2}' | sort | uniq | xargs -r kill -9"
+[tasks.register-mcp]
+run = "go run script/register-local-mcp/main.go"

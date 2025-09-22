@@ -1,0 +1,26 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "*.go",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "go fmt ./..."
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "go fmt ./..."
+          }
+        ]
+      }
+    ]
+  }
+}
