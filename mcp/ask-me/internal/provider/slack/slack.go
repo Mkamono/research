@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strconv"
 	"strings"
 	"time"
 
@@ -194,18 +193,4 @@ func (s *slack) getThreadMessages(ctx context.Context, threadID string) ([]strin
 	}
 
 	return messages, nil
-}
-
-func parseSlackTimestamp(ts string) (int64, error) {
-	parts := strings.Split(ts, ".")
-	if len(parts) != 2 {
-		return 0, fmt.Errorf("invalid timestamp format")
-	}
-
-	seconds, err := strconv.ParseInt(parts[0], 10, 64)
-	if err != nil {
-		return 0, err
-	}
-
-	return seconds, nil
 }
