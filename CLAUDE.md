@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Go-based research application using Firebase Genkit that implements a multi-agent AI system for research and recipe generation. The application provides structured workflows through three main flows: `RecipeGeneratorFlow`, `ResearchFlow`, and `SimpleFlow`.
+This is a Go-based application using Firebase Genkit that provides AI-powered workflows for recipe generation and simple text processing. The application currently has two main flows: `RecipeGeneratorFlow` and `SimpleFlow`, with MCP (Model Context Protocol) integration for external tool access.
 
 ## Architecture
 
@@ -12,12 +12,9 @@ This is a Go-based research application using Firebase Genkit that implements a 
 
 - **main.go**: Entry point that initializes Genkit with Google AI plugin, sets up MCP (Model Context Protocol) host for external tools, and starts HTTP server on port 3400
 - **flow/recipe.go**: Recipe generation flow that takes ingredient and dietary restrictions as input and generates structured recipe data
-- **flow/research.go**: Multi-agent research flow implementing a 3-agent system:
-  - Planning Agent: Creates research plan with questions and approach
-  - Data Collection Agent: Gathers findings and sources based on the plan
-  - Synthesis Agent: Creates comprehensive research report (outputs in Japanese)
-- **flow/simple.go**: Basic text generation flow for simple AI interactions
-- **servers.go**: Configuration for MCP servers that provide external tools (add, add2 servers)
+- **flow/simple.go**: Basic text generation flow for simple AI interactions with MCP tool access
+- **local_mcp.go**: Configuration for MCP servers that provide external tools (ask-me server)
+- **mcp/ask-me/**: MCP server that provides chat functionality with Slack integration for user interaction
 
 ### Key Features
 
@@ -25,16 +22,16 @@ This is a Go-based research application using Firebase Genkit that implements a 
 - MCP (Model Context Protocol) integration for external tool access
 - Structured data generation with JSON schemas for input/output validation
 - HTTP endpoints for flow execution
-- Streaming research flow available for real-time progress updates
-- Multi-agent orchestration for complex research tasks with optional user input providers
+- Slack integration for interactive user communication through MCP tools
 
 ### MCP Integration
 
-The application connects to local MCP servers defined in `servers.go`:
-- **add**: Basic addition server (`mcp/add/main.go`)
-- **add2**: Extended addition server (`mcp/add2/main.go`)
+The application connects to local MCP servers defined in `local_mcp.go`:
+- **ask-me**: Interactive chat server (`mcp/ask-me/main.go`) that provides:
+  - `chat`: Tool for asking users questions and getting responses via Slack
+  - `get_thread_history`: Tool for retrieving conversation history from threads
 
-These servers provide tools that are registered as Genkit actions and available to all flows.
+These servers provide tools that are registered as Genkit actions and available to flows that support MCP tools.
 
 ## Development Commands
 
@@ -44,18 +41,11 @@ All commands are managed through `mise` (configured in `mise.toml`):
 # Start development server with Genkit UI
 mise run dev
 
-# Kill running processes (primary method)
-mise run kill2
-
-# Alternative kill method
-mise run kill
-
-# Check running ports
-mise run ports
-
-# Kill specific ports
-mise run kill-ports
+# Kill research-specific ports (4033, 4000, 3400)
 mise run kill-research-ports
+
+# Register MCP servers
+mise run register-mcp
 ```
 
 The development server:
@@ -66,8 +56,7 @@ The development server:
 ## API Endpoints
 
 - `POST /recipeGeneratorFlow`: Recipe generation
-- `POST /researchFlow`: Research report generation (3-agent workflow)
-- `POST /simpleFlow`: Basic text generation
+- `POST /simpleFlow`: Basic text generation with MCP tool support
 
 ## Input/Output Schemas
 
@@ -75,13 +64,10 @@ The development server:
 - Input: `RecipeInput` with ingredient and dietary restrictions
 - Output: `Recipe` with structured recipe data including ingredients, instructions, and timing
 
-### Research Flow
-- Input: `ResearchInput` with topic, scope, depth, sources, context, purpose, and timeframe
-- Output: `ResearchResult` with comprehensive research report including executive summary, key findings, recommendations, and agent trace
-
 ### Simple Flow
 - Input: `SimpleInput` with text input
 - Output: Plain text response
+- Has access to MCP tools for interactive user communication
 
 ## Dependencies
 
@@ -89,7 +75,8 @@ The development server:
 - Firebase Genkit Go SDK
 - Google AI plugin for Gemini models
 - MCP Go library for external tool integration
-- GEMINI_API_KEY environment variable (configured in mise.toml)
+- GEMINI_API_KEY environment variable (configured in .env.local)
+- SLACK_OAUTH_TOKEN and SLACK_CHANNEL environment variables for MCP integration
 
 ## Build and Run
 
@@ -101,12 +88,13 @@ mise run dev
 go run .
 
 # Clean up processes
-mise run kill2
+mise run kill-research-ports
 ```
 
 The application requires:
 - Genkit CLI (`npm:genkit-cli` installed via mise)
-- Valid GEMINI_API_KEY environment variable
+- Valid GEMINI_API_KEY environment variable in .env.local
+- SLACK_OAUTH_TOKEN and SLACK_CHANNEL for MCP chat functionality
 - Go 1.24.5 or later
 
 ## Testing and Development
@@ -115,4 +103,4 @@ The project uses Firebase Genkit's built-in development tools. The Genkit Develo
 - Flow testing interface
 - Request/response inspection
 - Performance monitoring
-- Agent trace visualization for multi-agent workflows
+- MCP tool interaction testing
