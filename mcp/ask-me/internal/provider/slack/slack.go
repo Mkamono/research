@@ -21,6 +21,7 @@ type slack struct {
 	channelID  string // 実際のチャンネルID
 	client     *http.Client
 	replies    map[string][]string
+	timeout    time.Duration
 }
 
 func NewChatProvider(oAuthToken, channel string) *slack {
@@ -29,6 +30,7 @@ func NewChatProvider(oAuthToken, channel string) *slack {
 		channel:    channel,
 		client:     &http.Client{Timeout: 30 * time.Second},
 		replies:    make(map[string][]string),
+		timeout:    24 * time.Hour,
 	}
 }
 
@@ -38,7 +40,7 @@ func (s *slack) Chat(ctx context.Context, req app.ChatRequest) (app.ChatResponse
 		return app.ChatResponse{}, fmt.Errorf("failed to send message: %w", err)
 	}
 
-	reply, err := s.waitForReply(ctx, threadID, req.Timeout)
+	reply, err := s.waitForReply(ctx, threadID, s.timeout)
 	if err != nil {
 		return app.ChatResponse{}, fmt.Errorf("failed to wait for reply: %w", err)
 	}

@@ -32,14 +32,20 @@ type SimpleInput struct {
 	Input string `json:"input" jsonschema:"description=User input text"`
 }
 
-func SimpleFlow(g *genkit.Genkit) *core.Flow[*SimpleInput, string, struct{}] {
+func SimpleFlow(g *genkit.Genkit, mcpTools []ai.Tool) *core.Flow[*SimpleInput, string, struct{}] {
 	// Define a simple flow that sends input to AI and returns response
+
+	ToolRef := make([]ai.ToolRef, 0, len(mcpTools))
+	for _, tool := range mcpTools {
+		ToolRef = append(ToolRef, tool)
+	}
 
 	simpleFlow := genkit.DefineFlow(g, "simpleFlow", func(ctx context.Context, input *SimpleInput) (string, error) {
 
 		// Generate response using AI
 		response, err := genkit.GenerateText(ctx, g,
 			ai.WithPrompt(input.Input),
+			ai.WithTools(ToolRef...),
 		)
 		if err != nil {
 			return "", fmt.Errorf("failed to generate response: %w", err)

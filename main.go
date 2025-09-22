@@ -41,7 +41,7 @@ func main() {
 
 	recipeGeneratorFlow := flow.RecipeGeneratorFlow(g)
 	researchFlow := flow.ResearchFlow(g)
-	simpleFlow := flow.SimpleFlow(g)
+	simpleFlow := flow.SimpleFlow(g, mcpTools)
 
 	// Start a server to serve the flow and keep the app running for the Developer UI
 	mux := http.NewServeMux()

@@ -2,7 +2,6 @@ package app
 
 import (
 	"context"
-	"time"
 )
 
 type ChatProvider interface {
@@ -11,17 +10,16 @@ type ChatProvider interface {
 }
 
 type ChatRequest struct {
-	Message  string        `json:"message" desc:"The message to send"`
-	ThreadID *string       `json:"thread_id,omitempty" desc:"Optional thread ID to continue conversation (nil creates new thread)"`
-	Timeout  time.Duration `json:"timeout" desc:"Timeout duration for waiting for reply"`
+	Message  string  `json:"message" desc:"The message to send to the user"`
+	ThreadID *string `json:"thread_id,omitempty" desc:"Optional thread ID to continue an existing conversation. Use the same thread ID for related questions or follow-up discussions. Leave nil to start a new conversation thread."`
 }
 
 type ChatResponse struct {
-	Message  string `json:"message" desc:"The reply message received"`
-	ThreadID string `json:"thread_id" desc:"Thread ID for this conversation"`
+	Message  string `json:"message" desc:"The reply message received from the user"`
+	ThreadID string `json:"thread_id" desc:"Thread ID for this conversation. Save this to continue the conversation in the same thread for related topics or follow-up questions."`
 }
 
 type GetThreadHistoryResponse struct {
-	ThreadID string   `json:"thread_id" desc:"Thread ID"`
-	Messages []string `json:"messages" desc:"All messages in the thread"`
+	ThreadID string   `json:"thread_id" desc:"Thread ID of the conversation"`
+	Messages []string `json:"messages" desc:"All messages in the thread in chronological order"`
 }
