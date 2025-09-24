@@ -1,4 +1,5 @@
 [tools]
+lefthook = "latest"
 "npm:genkit-cli" = "latest"
 
 [env]
