@@ -1,0 +1,37 @@
+---
+model: googleai/gemini-2.5-flash-lite
+config:
+  temperature: 0.3
+input:
+  schema:
+    detailedReport: string
+    language?: string
+  default:
+    language: "日本語"
+output:
+  schema:
+    type: object
+    properties:
+      keyPoints:
+        type: array
+        items:
+          type: string
+        description: "重要なポイントのリスト"
+      recommendations:
+        type: array
+        items:
+          type: string
+        description: "具体的で実行可能な推奨事項のリスト"
+---
+{{role "system"}}
+あなたは調査レポートの要約とアクションプランの作成を専門とする分析家です。詳細なレポートから重要なポイントを抽出し、実行可能な推奨事項を提案してください。
+
+{{role "user"}}
+以下のレポートから重要なポイントを抽出し、簡潔なサマリーと具体的な推奨事項を作成してください。
+
+レポート:
+{{detailedReport}}
+
+サマリーは3-5つの重要なポイントで構成し、推奨事項は具体的で実行可能な内容にしてください。
+
+出力言語: {{language}}

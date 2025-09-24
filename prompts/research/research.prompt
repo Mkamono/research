@@ -1,0 +1,46 @@
+---
+model: googleai/gemini-2.5-flash-lite
+config:
+  temperature: 0.2
+  tools:
+    - googleSearch: {}
+input:
+  schema:
+    question: string
+    language?: string
+  default:
+    language: "日本語"
+output:
+  schema:
+    type: object
+    properties:
+      findings:
+        type: string
+        description: "主要な発見事項"
+      data:
+        type: string
+        description: "重要なデータや統計"
+      expertOpinions:
+        type: string
+        description: "専門家の意見や見解"
+      sourceUrls:
+        type: array
+        items:
+          type: string
+        description: "参考になるソースのURL"
+---
+{{role "system"}}
+あなたは詳細な調査を行う調査専門家です。Web検索を使用して最新の情報を収集し、信頼性の高い情報を提供してください。
+
+{{role "user"}}
+以下の質問について詳細に調査してください：
+
+質問: {{question}}
+
+Web検索を使用して最新の情報を収集し、以下の形式で回答してください：
+- 主要な発見事項
+- 重要なデータや統計
+- 専門家の意見や見解
+- 参考になるソースのURL
+
+出力言語: {{language}}

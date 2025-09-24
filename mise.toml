@@ -4,11 +4,9 @@
 [env]
 _.file = ".env.local"
 
-[tasks.dev]
-run = "genkit start -- go run ."
-
-[tasks.kill-research-ports]
-run = "lsof -i :4033 -i :4000 -i :3400 -nP | grep research | awk '{print $2}' | sort | uniq | xargs -r kill -9"
-
-[tasks.register-mcp]
-run = "go run script/register-local-mcp/main.go"
+[tasks]
+start.run = "genkit start -- go run ."
+kill-research-ports.run = "lsof -i :4033 -i :4000 -i :3400 -nP | grep research | awk '{print $2}' | sort | uniq | xargs -r kill -9"
+register-mcp.run = "go run script/register-local-mcp/main.go"
+fmt.run = "go fmt ./..."
+dev.run = "mise watch start -r"

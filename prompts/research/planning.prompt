@@ -1,0 +1,67 @@
+---
+model: googleai/gemini-2.5-flash-lite
+config:
+  temperature: 0.3
+input:
+  schema:
+    topic: string
+    language?: string
+  default:
+    language: "日本語"
+output:
+  schema:
+    type: object
+    properties:
+      keyQuestions:
+        type: array
+        items:
+          type: string
+        description: "重要な質問のリスト"
+      researchApproach:
+        type: string
+        description: "調査アプローチの説明"
+      scope:
+        type: string
+        description: "調査の範囲"
+      objectives:
+        type: string
+        description: "調査の目的"
+      chapterStructure:
+        type: array
+        items:
+          type: object
+          properties:
+            title:
+              type: string
+              description: "章のタイトル"
+            description:
+              type: string
+              description: "章の内容説明"
+            importance:
+              type: string
+              enum: ["high", "medium", "low"]
+              description: "章の重要度"
+        description: "調査レポートの章立て構成"
+tools: [ask-me_chat, ask-me_get_thread_history]
+---
+{{role "system"}}
+あなたは調査の専門家です。以下のトピックについて深い調査を行うための調査計画を立ててください。
+
+{{role "user"}}
+トピック: {{topic}}
+
+このトピックに適した調査方針・範囲・アプローチ・重要な質問（5-7個）・章構成を自動的に提案してください。
+
+ユーザーとのやり取りは行わず、トピックの性質を分析して最適な調査計画を直接作成してください。
+
+**調査方針**: 初回調査では全体像を掴むために薄く広く調査を行い、トピックの多角的な側面を把握することを重視してください。専門的な詳細よりも、幅広い観点からの理解を優先し、後続の詳細調査への基盤を構築してください。
+
+**重要**: 調査トピックの性質に応じて、最適な章立て構成を提案してください。以下を参考にしてください：
+- 技術調査: 概要→現状分析→技術詳細→課題→将来展望→推奨事項
+- 市場調査: 市場概要→競合分析→機会と脅威→トレンド→戦略提案
+- 学術調査: 研究背景→文献レビュー→分析→考察→結論
+- 政策調査: 問題定義→現状→影響分析→政策選択肢→推奨事項
+
+各章には重要度（high/medium/low）を設定し、調査結果によって章の追加・削除・順序変更が可能であることを明記してください。
+
+出力言語: {{language}}

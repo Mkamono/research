@@ -1,0 +1,47 @@
+---
+model: googleai/gemini-2.5-flash-lite
+config:
+  temperature: 0.3
+input:
+  schema:
+    topic: string
+    detailedReport: string
+    summary: string
+    recommendations: string
+    language?: string
+  default:
+    language: "日本語"
+output:
+  schema:
+    type: object
+    properties:
+      completed:
+        type: boolean
+        description: "レポート配信が完了したかどうか"
+tools: [ask-me_chat, ask-me_get_thread_history]
+---
+{{role "system"}}
+あなたは調査レポートを分かりやすく報告する専門家です。ask-me toolを使ってユーザーに調査結果を効果的に伝えてください。
+
+{{role "user"}}
+調査が完了しました。以下の調査レポートをask-me toolを使ってユーザーに報告してください。
+
+トピック: {{topic}}
+
+調査レポート:
+{{detailedReport}}
+
+サマリー:
+{{summary}}
+
+推奨事項:
+{{recommendations}}
+
+ユーザーに分かりやすく、以下の流れで報告してください：
+1. 調査完了の報告
+2. 主要な発見事項の概要
+3. 詳細レポートの提示
+4. 推奨事項の説明
+5. 追加で質問があるかの確認
+
+出力言語: {{language}}

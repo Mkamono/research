@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(mise run kill2:*)",
-      "mcp__genkit__lookup_genkit_docs"
+      "mcp__genkit__lookup_genkit_docs",
+      "mcp__ide__getDiagnostics",
+      "Bash(find:*)"
     ],
     "deny": [],
     "ask": []

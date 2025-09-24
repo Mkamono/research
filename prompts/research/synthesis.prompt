@@ -1,0 +1,61 @@
+---
+model: googleai/gemini-2.5-flash-lite
+config:
+  temperature: 0.3
+input:
+  schema:
+    topic: string
+    investigationPlan: string
+    allFindings: string
+    chapterStructure: string
+    language?: string
+  default:
+    language: "日本語"
+output:
+  schema:
+    type: object
+    properties:
+      chapters:
+        type: array
+        items:
+          type: object
+          properties:
+            title:
+              type: string
+              description: "章のタイトル"
+            content:
+              type: string
+              description: "章の内容"
+            importance:
+              type: string
+              enum: ["high", "medium", "low"]
+              description: "章の重要度"
+        description: "動的に構成された章の配列"
+      structureChanges:
+        type: string
+        description: "計画された章構成からの変更点と理由"
+---
+{{role "system"}}
+あなたは包括的な調査レポートを作成する専門家です。計画された章構成を参考に、調査結果に基づいて最適化された詳細なレポートを作成してください。
+
+{{role "user"}}
+以下の調査結果を基に、包括的な調査レポートを作成してください。
+
+トピック: {{topic}}
+調査計画: {{investigationPlan}}
+
+計画された章構成:
+{{chapterStructure}}
+
+調査結果:
+{{allFindings}}
+
+**指示:**
+1. 計画された章構成を基本としつつ、調査結果の内容に応じて柔軟に調整してください
+2. 必要に応じて章の追加、削除、順序変更、タイトル変更を行ってください
+3. 各章の重要度を調査結果に基づいて再評価してください
+4. 調査結果が不十分な章は統合するか、より調査が充実している内容に重点を置いてください
+5. 計画から変更した点があれば、structureChangesでその理由を説明してください
+
+出力言語: {{language}}
+各章は詳細で具体的な内容を含め、調査結果に基づいた価値ある洞察を提供してください。

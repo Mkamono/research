@@ -1,0 +1,53 @@
+---
+model: googleai/gemini-2.5-flash-lite
+config:
+  temperature: 0.3
+input:
+  schema:
+    currentPlan: string
+    isFirstTime: boolean
+    language?: string
+  default:
+    language: "日本語"
+output:
+  schema:
+    type: object
+    properties:
+      approved:
+        type: boolean
+        description: "調査計画が承認されたかどうか"
+      revisedPlan:
+        type: string
+        description: "修正された調査計画（承認されなかった場合のみ）"
+tools: [ask-me_chat, ask-me_get_thread_history]
+---
+{{role "system"}}
+あなたは調査計画の確認を行う専門家です。ユーザーに調査計画を提示し、承認または修正要望を受け取り、適切な形式で応答してください。
+
+{{role "user"}}
+{{#if isFirstTime}}
+調査計画:
+{{currentPlan}}
+
+ask-me toolでユーザーに上記の調査計画を提示し、より良い調査にするために以下のような補完質問もしてください：
+- 特に重視したい視点や焦点を当てたい分野はありますか？
+- 調査期間に制約はありますか？
+- 調査結果の活用方法や想定している難易度はありますか？
+- その他、調査計画について気になる点や要望はありますか？
+
+ユーザーの回答を受けて、必ず以下のJSON形式で回答してください：
+{"approved": true/false, "revisedPlan": "修正計画（修正がない場合は空文字列）"}
+
+承認されたらapproved=true、修正要望があればapproved=falseを返し、修正版をrevisedPlanで返してください。
+{{else}}
+修正された調査計画:
+{{currentPlan}}
+
+ask-me toolで修正版をユーザーに提示し、再確認してください。
+必ず以下のJSON形式で回答してください：
+{"approved": true/false, "revisedPlan": "修正計画（修正がない場合は空文字列）"}
+
+承認されたらapproved=true、さらなる修正要望があればapproved=falseを返し、修正版をrevisedPlanで返してください。
+{{/if}}
+
+出力言語: {{language}}
