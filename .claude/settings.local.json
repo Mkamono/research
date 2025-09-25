@@ -24,13 +24,15 @@
       "mcp__chrome-devtools-mcp__list_console_messages",
       "mcp__chrome-devtools-mcp__evaluate_script",
       "mcp__chrome-devtools-mcp__emulate_network",
-      "mcp__chrome-devtools-mcp__emulate_cpu"
+      "mcp__chrome-devtools-mcp__emulate_cpu",
+      "mcp__serena__activate_project",
+      "mcp__serena__list_dir",
+      "mcp__serena__get_symbols_overview",
+      "Bash(go run:*)"
     ],
     "deny": [],
     "ask": []
   },
   "enableAllProjectMcpServers": true,
-  "enabledMcpjsonServers": [
-    "genkit"
-  ]
+  "enabledMcpjsonServers": []
 }

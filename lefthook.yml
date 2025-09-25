@@ -3,7 +3,7 @@ pre-commit:
   jobs:
     - name: go fmt
       glob: "*.go"
-      run: go fmt {all_files} && git add {staged_files}
+      run: go fmt ./...
 
 pre-push:
   jobs:

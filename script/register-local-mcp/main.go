@@ -7,15 +7,25 @@ import (
 	"text/template"
 )
 
-const mcpTemplate = `package main
+// MCP Server Names - 公開可能な定数
+const (
+	ServerAskMe = "ask-me"
+)
+
+const mcpTemplate = `package mcp
 
 import (
 	"github.com/firebase/genkit/go/plugins/mcp"
 )
 
-var servers = []mcp.MCPClientOptions{
+// MCP Server Names - 公開可能な定数
+const (
+{{range .Constants}}	{{.Name}} = "{{.Value}}"
+{{end}})
+
+var Servers = []mcp.MCPClientOptions{
 {{range .Servers}}	{
-		Name: "{{.Name}}",
+		Name: {{.ConstantName}},
 		Stdio: &mcp.StdioConfig{
 			Command: "go",
 			Args:    []string{"run", "{{.Path}}"},
@@ -25,18 +35,31 @@ var servers = []mcp.MCPClientOptions{
 `
 
 type MCPServer struct {
-	Name string
-	Path string
+	Name         string
+	Path         string
+	ConstantName string
+}
+
+type Constant struct {
+	Name  string
+	Value string
 }
 
 type TemplateData struct {
-	Servers []MCPServer
+	Servers   []MCPServer
+	Constants []Constant
 }
 
 func main() {
+	// サーバー名と定数名のマッピング
+	serverConstantMap := map[string]string{
+		ServerAskMe: "ServerAskMe",
+	}
+
 	// Find all MCP server directories
 	mcpDir := "mcp"
 	servers := []MCPServer{}
+	constants := []Constant{}
 
 	entries, err := os.ReadDir(mcpDir)
 	if err != nil {
@@ -51,9 +74,21 @@ func main() {
 
 			// Check if main.go exists
 			if _, err := os.Stat(mainGoPath); err == nil {
+				constantName, exists := serverConstantMap[serverName]
+				if !exists {
+					fmt.Printf("Warning: No constant defined for server '%s', skipping\n", serverName)
+					continue
+				}
+
 				servers = append(servers, MCPServer{
-					Name: serverName,
-					Path: mainGoPath,
+					Name:         serverName,
+					Path:         mainGoPath,
+					ConstantName: constantName,
+				})
+
+				constants = append(constants, Constant{
+					Name:  constantName,
+					Value: serverName,
 				})
 			}
 		}
@@ -71,7 +106,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	outputFile := "local_mcp.go"
+	outputFile := "mcp/local_mcp.go"
 	file, err := os.Create(outputFile)
 	if err != nil {
 		fmt.Printf("Error creating file %s: %v\n", outputFile, err)
@@ -79,7 +114,10 @@ func main() {
 	}
 	defer file.Close()
 
-	data := TemplateData{Servers: servers}
+	data := TemplateData{
+		Servers:   servers,
+		Constants: constants,
+	}
 	err = tmpl.Execute(file, data)
 	if err != nil {
 		fmt.Printf("Error executing template: %v\n", err)

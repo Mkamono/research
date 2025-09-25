@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"research/flow"
+	mcpconfig "research/mcp"
 
 	"github.com/firebase/genkit/go/genkit"
 	"github.com/firebase/genkit/go/plugins/googlegenai"
@@ -27,7 +28,7 @@ func main() {
 		log.Fatal("Failed to create MCP host:", err)
 	}
 
-	for _, server := range servers {
+	for _, server := range mcpconfig.Servers {
 		host.Connect(ctx, g, server.Name, server)
 	}
 

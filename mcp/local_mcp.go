@@ -1,12 +1,17 @@
-package main
+package mcp
 
 import (
 	"github.com/firebase/genkit/go/plugins/mcp"
 )
 
-var servers = []mcp.MCPClientOptions{
+// MCP Server Names - 公開可能な定数
+const (
+	ServerAskMe = "ask-me"
+)
+
+var Servers = []mcp.MCPClientOptions{
 	{
-		Name: "ask-me",
+		Name: ServerAskMe,
 		Stdio: &mcp.StdioConfig{
 			Command: "go",
 			Args:    []string{"run", "mcp/ask-me/main.go"},
