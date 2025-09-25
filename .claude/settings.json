@@ -1,26 +1,40 @@
 {
-  "hooks": {
-    "PostToolUse": [
-      {
-        "matcher": "*.go",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "go fmt ./..."
-          }
-        ]
-      }
+  "permissions": {
+    "allow": [
+      "Bash(mise run kill2:*)",
+      "mcp__genkit__lookup_genkit_docs",
+      "mcp__ide__getDiagnostics",
+      "Bash(find:*)",
+      "mcp__chrome-devtools-mcp__list_pages",
+      "mcp__chrome-devtools-mcp__navigate_page",
+      "mcp__chrome-devtools-mcp__performance_start_trace",
+      "mcp__chrome-devtools-mcp__new_page",
+      "mcp__chrome-devtools-mcp__select_page",
+      "mcp__chrome-devtools-mcp__resize_page",
+      "mcp__chrome-devtools-mcp__take_snapshot",
+      "mcp__chrome-devtools-mcp__take_screenshot",
+      "mcp__chrome-devtools-mcp__click",
+      "mcp__chrome-devtools-mcp__hover",
+      "mcp__chrome-devtools-mcp__fill",
+      "mcp__chrome-devtools-mcp__fill_form",
+      "mcp__chrome-devtools-mcp__list_network_requests",
+      "mcp__chrome-devtools-mcp__get_network_request",
+      "mcp__chrome-devtools-mcp__performance_stop_trace",
+      "mcp__chrome-devtools-mcp__performance_analyze_insight",
+      "mcp__chrome-devtools-mcp__list_console_messages",
+      "mcp__chrome-devtools-mcp__evaluate_script",
+      "mcp__chrome-devtools-mcp__emulate_network",
+      "mcp__chrome-devtools-mcp__emulate_cpu",
+      "mcp__serena__activate_project",
+      "mcp__serena__list_dir",
+      "mcp__serena__get_symbols_overview",
+      "Bash(go run:*)",
+      "mcp__serena__check_onboarding_performed",
+      "mcp__serena__onboarding"
     ],
-    "Stop": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "go fmt ./..."
-          }
-        ]
-      }
-    ]
-  }
+    "deny": [],
+    "ask": []
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": []
 }
